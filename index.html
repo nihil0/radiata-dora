@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta property="og:title" content="Radiata · DORA Register of Information">
+<meta property="og:description" content="Reconcile your DORA Register of Information against accounts payable, Entra ID, Azure and your contract repository.">
+<meta property="og:url" content="https://dora.radiata.fi/">
+<link rel="canonical" href="https://dora.radiata.fi/">
+<style>body{margin:0} img{max-width:100%} [hidden]{display:none!important}</style>
+<title>Radiata DORA Register</title>
+<meta name="description" content="Radiata reconciles your DORA Register of Information against accounts payable, Entra ID, Azure and your contract repository, so you can prove it is complete.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a ledger. Prose on the left, a reconciliation table as the hero object, hairline rules between sections. */
+:root {
+  --paper: #f3f5f2;
+  --panel: #ffffff;
+  --ink: #16201c;
+  --muted: #56625b;
+  --rule: #d3d9d2;
+  --accent: #0b6e4f;
+  --accent-ink: #ffffff;
+  --flag: #a8661a;
+  --flag-bg: #f6ead9;
+  --ok-bg: #e2efe8;
+  --font-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --step--1: 0.8125rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.25rem;
+  --step-2: 1.625rem;
+  --step-3: 2.25rem;
+  --step-4: clamp(2.25rem, 1.4rem + 3.6vw, 3.75rem);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f1513; --panel: #161e1b; --ink: #e5ebe7; --muted: #9aa8a0; --rule: #2a3631;
+    --accent: #3fbf8f; --accent-ink: #0b1410; --flag: #e3a84e; --flag-bg: #2e2416; --ok-bg: #15291f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f1513; --panel: #161e1b; --ink: #e5ebe7; --muted: #9aa8a0; --rule: #2a3631;
+  --accent: #3fbf8f; --accent-ink: #0b1410; --flag: #e3a84e; --flag-bg: #2e2416; --ok-bg: #15291f;
+  color-scheme: dark;
+}
+
+:root[data-lang="fi"] .en { display: none !important; }
+:root:not([data-lang="fi"]) .fi { display: none !important; }
+
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+h1, h2, h3 { font-family: var(--font-display); font-stretch: 80%; line-height: 1.08; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+p { margin: 0; max-width: 62ch; }
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+/* Header */
+header.site { border-bottom: 1px solid var(--rule); }
+header.site .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 18px; flex-wrap: wrap; }
+.mark { font-family: var(--font-display); font-weight: 800; font-stretch: 75%; font-size: 1.375rem; letter-spacing: 0.02em; color: var(--ink); text-decoration: none; display: flex; align-items: baseline; gap: 8px; }
+.mark small { font-family: var(--font-mono); font-weight: 400; font-size: 0.75rem; color: var(--muted); letter-spacing: 0.04em; }
+nav.top { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+nav.top a { color: var(--ink); text-decoration: none; font-family: var(--font-display); font-size: 0.9375rem; font-weight: 500; }
+nav.top a:hover { color: var(--accent); }
+.lang { display: inline-flex; border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+.lang button { background: transparent; border: 0; color: var(--muted); font-family: var(--font-mono); font-size: 0.8125rem; padding: 4px 10px; cursor: pointer; }
+.lang button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+
+/* Hero */
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 56px; padding-block: 72px 80px; align-items: start; }
+.hero h1 { font-size: var(--step-4); font-weight: 800; margin-top: 16px; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero .lede { font-size: var(--step-1); line-height: 1.5; margin-top: 24px; color: var(--ink); }
+.cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 32px; }
+.btn { display: inline-block; font-family: var(--font-display); font-weight: 600; font-size: 1rem; text-decoration: none; padding: 12px 20px; border-radius: 4px; border: 1px solid var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn.ghost { color: var(--accent); background: transparent; }
+.btn.ghost:hover { background: var(--ok-bg); }
+
+/* Ledger */
+.ledger { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; font-family: var(--font-mono); font-size: 0.8125rem; min-width: 0; }
+.ledger-head { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 14px 18px; border-bottom: 1px solid var(--rule); color: var(--muted); }
+.ledger-head strong { color: var(--ink); font-weight: 500; }
+.ledger .scroll { overflow-x: auto; }
+.ledger table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; min-width: 440px; }
+.ledger th, .ledger td { padding: 11px 18px; text-align: right; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+.ledger th:first-child, .ledger td:first-child { text-align: left; white-space: normal; }
+.ledger th { font-weight: 400; color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.ledger td.src { color: var(--ink); font-weight: 500; }
+.ledger td.src span { display: block; color: var(--muted); font-weight: 400; font-size: 0.75rem; }
+.pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-weight: 500; }
+.pill.gap { background: var(--flag-bg); color: var(--flag); }
+.pill.ok { background: var(--ok-bg); color: var(--accent); }
+.ledger-foot { padding: 14px 18px; display: grid; gap: 6px; }
+.ledger-foot .line { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.ledger-foot .code { color: var(--flag); }
+.ledger-note { padding: 10px 18px 14px; color: var(--muted); font-size: 0.75rem; border-top: 1px dashed var(--rule); }
+
+/* Sections */
+section.band { border-top: 1px solid var(--rule); }
+section.band > .wrap { padding-block: 72px; }
+.sec-head { display: grid; grid-template-columns: minmax(0, 260px) minmax(0, 1fr); gap: 48px; }
+.sec-head h2 { font-size: var(--step-3); font-weight: 700; }
+.sec-body { display: grid; gap: 20px; min-width: 0; }
+
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin-top: 40px; border-top: 1px solid var(--rule); }
+.fact { padding: 24px 24px 0 0; display: grid; gap: 8px; align-content: start; }
+.fact + .fact { padding-left: 24px; border-left: 1px solid var(--rule); }
+.fact .num { font-family: var(--font-display); font-weight: 800; font-stretch: 75%; font-size: var(--step-3); line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; }
+.fact p { font-size: 0.9375rem; color: var(--ink); }
+.fact .src { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); }
+
+ol.steps { list-style: none; padding: 0; margin: 40px 0 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--rule); counter-reset: step; }
+ol.steps li { padding: 24px 20px 0 0; display: grid; gap: 10px; align-content: start; counter-increment: step; }
+ol.steps li + li { padding-left: 20px; border-left: 1px solid var(--rule); }
+ol.steps li::before { content: counter(step, decimal-leading-zero); font-family: var(--font-mono); font-size: var(--step--1); color: var(--accent); }
+ol.steps h3 { font-size: var(--step-1); font-weight: 700; }
+ol.steps p { font-size: 0.9375rem; }
+
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; margin-top: 40px; }
+.two h3 { font-size: var(--step-1); font-weight: 700; margin-bottom: 12px; }
+ul.plain { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+ul.plain li { padding-left: 20px; position: relative; max-width: 58ch; }
+ul.plain li::before { content: ""; position: absolute; left: 0; top: 0.72em; width: 10px; height: 1px; background: var(--accent); }
+
+.research { background: var(--panel); }
+.research .grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 48px; align-items: start; }
+.research h2 { font-size: var(--step-3); font-weight: 700; margin-top: 12px; }
+.terms { display: grid; gap: 0; border: 1px solid var(--rule); border-radius: 6px; }
+.terms div { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 16px; padding: 14px 18px; }
+.terms div + div { border-top: 1px solid var(--rule); }
+.terms dt { font-family: var(--font-mono); font-size: var(--step--1); color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; padding-top: 2px; }
+.terms dd { margin: 0; font-size: 0.9375rem; }
+
+.contact-box { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.email { font-family: var(--font-mono); font-size: 1rem; background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; padding: 10px 14px; user-select: all; color: var(--ink); text-decoration: none; overflow-wrap: anywhere; }
+.copy { font-family: var(--font-display); font-weight: 600; font-size: 0.9375rem; background: transparent; color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; padding: 10px 14px; cursor: pointer; }
+.copy:hover { background: var(--ok-bg); }
+.or { margin-top: 24px; font-size: 0.9375rem; color: var(--muted); }
+.copied { font-family: var(--font-mono); font-size: var(--step--1); color: var(--accent); }
+
+.about .person { display: grid; gap: 6px; }
+.about .name { font-family: var(--font-display); font-weight: 700; font-size: var(--step-2); }
+.about .role { font-family: var(--font-mono); font-size: var(--step--1); color: var(--muted); }
+
+footer.site { border-top: 1px solid var(--rule); }
+footer.site .wrap { padding-block: 28px 40px; display: grid; gap: 12px; color: var(--muted); font-size: 0.875rem; }
+footer.site .row { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+footer.site .sources { font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.6; }
+
+@media (max-width: 900px) {
+  .hero .wrap { grid-template-columns: minmax(0, 1fr); gap: 40px; padding-block: 48px 56px; }
+  .sec-head { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  ol.steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  ol.steps li:nth-child(3) { padding-left: 0; border-left: 0; }
+  ol.steps li:nth-child(n+3) { margin-top: 24px; border-top: 1px solid var(--rule); }
+  .research .grid, .two { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  section.band > .wrap { padding-block: 56px; }
+}
+@media (max-width: 620px) {
+  .facts, ol.steps { grid-template-columns: minmax(0, 1fr); }
+  .fact, .fact + .fact { padding: 20px 0; border-left: 0; }
+  .fact + .fact { border-top: 1px solid var(--rule); }
+  ol.steps li, ol.steps li + li { padding: 20px 0; border-left: 0; margin-top: 0; }
+  ol.steps li + li { border-top: 1px solid var(--rule); }
+  nav.top .nav-link { display: none; }
+  .terms div { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ledger tbody tr { animation: rowin 0.5s ease both; }
+  .ledger tbody tr:nth-child(2) { animation-delay: 0.08s; }
+  .ledger tbody tr:nth-child(3) { animation-delay: 0.16s; }
+  .ledger tbody tr:nth-child(4) { animation-delay: 0.24s; }
+  @keyframes rowin { from { opacity: 0.35; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+}
+</style>
+</head>
+<body>
+
+
+<header class="site">
+  <div class="wrap">
+    <a class="mark" href="#top">RADIATA</a>
+    <nav class="top" aria-label="Main">
+      <a class="nav-link" href="#contact"><span class="en">Contact</span><span class="fi">Yhteystiedot</span></a>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" id="lang-en" data-set-lang="en" aria-pressed="true">EN</button>
+        <button type="button" id="lang-fi" data-set-lang="fi" aria-pressed="false">FI</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <p class="label"><span class="en">DORA Article 28(3) · Register of Information</span><span class="fi">DORA 28 artiklan 3 kohta · tietorekisteri</span></p>
+        <h1>
+          <span class="en">Prove your DORA register is <em>complete</em>.</span>
+          <span class="fi">Osoita, että DORA-tietorekisterisi on <em>kattava</em>.</span>
+        </h1>
+        <p class="lede">
+          <span class="en">Radiata checks your Register of Information against the systems that hold your ICT arrangements: accounts payable, Entra ID, Azure and your contract repository. You find the gaps before the supervisor does.</span>
+          <span class="fi">Radiata vertaa tietorekisteriä järjestelmiin, joissa ICT-sopimusjärjestelynne ovat: ostoreskontraan, Entra ID:hen, Azureen ja sopimusrekisteriin. Löydätte puutteet ennen valvojaa.</span>
+        </p>
+        <div class="cta">
+          <a class="btn primary" href="#research"><span class="en">Take part in the research</span><span class="fi">Osallistu tutkimukseen</span></a>
+          <a class="btn ghost" href="#problem"><span class="en">The problem</span><span class="fi">Ongelma</span></a>
+        </div>
+      </div>
+
+      <figure class="ledger" aria-label="Illustrative reconciliation of a register against source systems" style="margin:0">
+        <div class="ledger-head">
+          <strong><span class="en">Reconciliation</span><span class="fi">Täsmäytys</span></strong>
+          <span><span class="en">Reference date</span><span class="fi">Viitepäivä</span> 31.12.2026</span>
+        </div>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col"><span class="en">Source</span><span class="fi">Lähde</span></th>
+                <th scope="col"><span class="en">Found</span><span class="fi">Löydetty</span></th>
+                <th scope="col"><span class="en">In register</span><span class="fi">Rekisterissä</span></th>
+                <th scope="col"><span class="en">Gap</span><span class="fi">Puute</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="src"><span class="en">Accounts payable</span><span class="fi">Ostoreskontra</span><span><span class="en">ICT suppliers by spend</span><span class="fi">ICT-toimittajat kulujen mukaan</span></span></td>
+                <td>214</td><td>187</td><td><span class="pill gap">27</span></td>
+              </tr>
+              <tr>
+                <td class="src">Entra ID<span><span class="en">Enterprise apps, by provider</span><span class="fi">Yrityssovellukset toimittajittain</span></span></td>
+                <td>96</td><td>81</td><td><span class="pill gap">15</span></td>
+              </tr>
+              <tr>
+                <td class="src"><span class="en">Contract repository</span><span class="fi">Sopimusrekisteri</span><span><span class="en">Active ICT contracts</span><span class="fi">Voimassa olevat ICT-sopimukset</span></span></td>
+                <td>163</td><td>151</td><td><span class="pill gap">12</span></td>
+              </tr>
+              <tr>
+                <td class="src">Azure<span><span class="en">Subscriptions and marketplace services</span><span class="fi">Tilaukset ja Marketplace-palvelut</span></span></td>
+                <td>18</td><td>18</td><td><span class="pill ok">0</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ledger-foot">
+          <div class="line"><span class="code">B_05.01</span><span><span class="en">27 providers without an arrangement record</span><span class="fi">27 palveluntarjoajaa ilman sopimusjärjestelytietoa</span></span></div>
+          <div class="line"><span class="code">B_02.02</span><span><span class="en">9 arrangements missing a function link</span><span class="fi">9 järjestelyltä puuttuu kytkentä toimintoon</span></span></div>
+        </div>
+        <figcaption class="ledger-note"><span class="en">Example figures for a mid-size financial entity.</span><span class="fi">Esimerkkiluvut keskikokoiselle finanssialan yhteisölle.</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="band" id="problem">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label"><span class="en">The problem</span><span class="fi">Ongelma</span></p>
+        <div class="sec-body">
+          <h2>
+            <span class="en">The register is derived data. Most firms maintain it by hand.</span>
+            <span class="fi">Rekisteri on johdettua tietoa. Useimmat ylläpitävät sitä käsin.</span>
+          </h2>
+          <p>
+            <span class="en">Every fact in the register already exists in a source system. Accounts payable shows who you pay. Entra ID shows which apps use your tenant. The contract repository shows which contracts are in force. Yet most firms build the register from questionnaires and spreadsheets, and rebuild it each spring. They cannot show that it is complete. New SaaS services start between cycles, and nobody records them.</span>
+            <span class="fi">Jokainen rekisterin tieto on jo jossakin lähdejärjestelmässä. Ostoreskontra kertoo, kenelle maksatte. Entra ID kertoo, mitkä sovellukset käyttävät tenanttianne. Sopimusrekisteri kertoo, mitkä sopimukset ovat voimassa. Silti useimmat kokoavat rekisterin kyselyistä ja taulukoista ja rakentavat sen joka kevät uudelleen. Kattavuutta ei voi osoittaa. Uusia SaaS-palveluita otetaan käyttöön raportointikausien välillä, eikä kukaan kirjaa niitä.</span>
+          </p>
+        </div>
+      </div>
+      <div class="facts">
+        <div class="fact">
+          <div class="num">6.5%</div>
+          <p><span class="en">of registers passed all ESA data-quality checks in the 2024 dry run.</span><span class="fi">rekistereistä läpäisi kaikki ESA:iden laatutarkastukset vuoden 2024 koeraportoinnissa.</span></p>
+          <span class="src">ESAs, 2024</span>
+        </div>
+        <div class="fact">
+          <div class="num">46%</div>
+          <p><span class="en">of financial entities said the register was their hardest DORA task.</span><span class="fi">finanssialan yhteisöistä piti rekisteriä DORAn vaikeimpana tehtävänä.</span></p>
+          <span class="src">Deloitte European DORA Survey, 2025</span>
+        </div>
+        <div class="fact">
+          <div class="num">xBRL-CSV</div>
+          <p><span class="en">is the only format supervisors accept. They can also ask for the register at any time.</span><span class="fi">on ainoa muoto, jonka valvoja hyväksyy. Valvoja voi myös pyytää rekisteriä milloin tahansa.</span></p>
+          <span class="src">ITS (EU) 2024/2956</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band research" id="research">
+    <div class="wrap">
+      <div class="grid">
+        <div>
+          <p class="label"><span class="en">Register research · winter 2026–27</span><span class="fi">Rekisteritutkimus · talvi 2026–27</span></p>
+          <h2>
+            <span class="en">Do you build or maintain your firm's register?</span>
+            <span class="fi">Rakennatko tai ylläpidätkö organisaatiosi rekisteriä?</span>
+          </h2>
+          <p style="margin-top:20px">
+            <span class="en">I am interviewing the people who build the register at European financial entities. This includes insurers, fund managers, investment firms, payment and e-money institutions, and crypto-asset service providers. I want to learn how you build the register today, and where the time goes.</span>
+            <span class="fi">Haastattelen henkilöitä, jotka rakentavat rekisteriä eurooppalaisissa finanssialan yhteisöissä. Näitä ovat vakuutusyhtiöt, rahastoyhtiöt, sijoituspalveluyritykset, maksu- ja sähkörahalaitokset sekä kryptovarapalvelujen tarjoajat. Haluan ymmärtää, miten rakennatte rekisterin nyt ja mihin aika kuluu.</span>
+          </p>
+          <div class="cta">
+            <a class="btn primary" href="https://bookings.cloud.microsoft/bookwithme/user/2f467c07c66140d6a5b9715022cc9ce1@radiata.fi/meetingtype/X1fo0L4CE02ZUwnvsBGn1A2?bookingcode=25ec1b66-cf3a-4721-903f-ea7b99cd1e25&amp;anonymous&amp;ismsaljsauthenabled&amp;ep=mcard" target="_blank" rel="noopener"><span class="en">Book a 30-minute call</span><span class="fi">Varaa 30 minuutin puhelu</span></a>
+          </div>
+        </div>
+        <dl class="terms">
+          <div><dt><span class="en">Time</span><span class="fi">Kesto</span></dt><dd><span class="en">30 minutes, by video or phone. You do not need to prepare.</span><span class="fi">30 minuuttia video- tai puhelinyhteydellä. Valmistautumista ei tarvita.</span></dd></div>
+          <div><dt><span class="en">You get</span><span class="fi">Saat</span></dt><dd><span class="en">An anonymous benchmark from 10 to 15 firms. It covers effort, common validation errors and how others show completeness.</span><span class="fi">Anonyymin vertailun 10–15 yhteisöstä. Se kattaa työmäärän, yleisimmät validointivirheet ja sen, miten muut osoittavat kattavuuden.</span></dd></div>
+          <div><dt><span class="en">Privacy</span><span class="fi">Luottamus</span></dt><dd><span class="en">I do not share company names or confidential data.</span><span class="fi">En jaa yritysten nimiä enkä luottamuksellisia tietoja.</span></dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="band about" id="contact">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label"><span class="en">About</span><span class="fi">Tietoa</span></p>
+        <div class="sec-body">
+          <div class="person">
+            <span class="name">Neelabh Kashyap</span>
+            <span class="role"><span class="en">Founder, Radiata Oy · Espoo</span><span class="fi">Perustaja, Radiata Oy · Espoo</span></span>
+          </div>
+          <p>
+            <span class="en">Principal data platform architect with a PhD in signal processing. I have built enterprise data platforms on Azure and Databricks for Nordic organizations for many years. My work focuses on metadata, lineage and governance. A complete register depends on all three.</span>
+            <span class="fi">Tietoalustojen pääarkkitehti ja signaalinkäsittelyn tohtori. Olen rakentanut pohjoismaisille organisaatioille tietoalustoja Azureen ja Databricksiin jo vuosia. Työni keskittyy metatietoon, tiedon alkuperän jäljitettävyyteen ja hallintamalleihin. Kattava rekisteri tarvitsee kaikkia kolmea.</span>
+          </p>
+          <div class="contact-box">
+            <a class="btn primary" href="https://bookings.cloud.microsoft/bookwithme/user/2f467c07c66140d6a5b9715022cc9ce1@radiata.fi/meetingtype/X1fo0L4CE02ZUwnvsBGn1A2?bookingcode=25ec1b66-cf3a-4721-903f-ea7b99cd1e25&amp;anonymous&amp;ismsaljsauthenabled&amp;ep=mcard" target="_blank" rel="noopener"><span class="en">Book a call</span><span class="fi">Varaa puhelu</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="row">
+      <span>© 2026 Radiata Oy · Espoo, Finland</span>
+      <span><span class="en">Data platform architecture and DORA register tooling</span><span class="fi">Tietoalustojen arkkitehtuuri ja DORA-rekisterityökalut</span></span>
+    </div>
+    <p class="sources"><span class="en">Sources:</span><span class="fi">Lähteet:</span> ESAs, report on the 2024 dry run of DORA registers of information · Deloitte, European DORA Survey 2025 · Commission Implementing Regulation (EU) 2024/2956.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  function setLang(lang) {
+    root.setAttribute('data-lang', lang);
+    root.setAttribute('lang', lang);
+    document.querySelectorAll('[data-set-lang]').forEach(function (b) {
+      b.setAttribute('aria-pressed', b.getAttribute('data-set-lang') === lang ? 'true' : 'false');
+    });
+    try { localStorage.setItem('radiata-lang', lang); } catch (e) {}
+  }
+  var saved = null;
+  try { saved = localStorage.getItem('radiata-lang'); } catch (e) {}
+  var initial = saved || ((navigator.language || '').toLowerCase().indexOf('fi') === 0 ? 'fi' : 'en');
+  setLang(initial);
+  document.querySelectorAll('[data-set-lang]').forEach(function (b) {
+    b.addEventListener('click', function () { setLang(b.getAttribute('data-set-lang')); });
+  });
+  document.querySelectorAll('[data-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var el = document.getElementById(btn.getAttribute('data-copy'));
+      var status = btn.parentNode.querySelector('.copied');
+      var text = el.textContent.trim();
+      var ok = function () { status.textContent = root.getAttribute('data-lang') === 'fi' ? 'Kopioitu' : 'Copied'; setTimeout(function () { status.textContent = ''; }, 2000); };
+      var fallback = function () {
+        var r = document.createRange(); r.selectNodeContents(el);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        status.textContent = root.getAttribute('data-lang') === 'fi' ? 'Valittu, kopioi Ctrl+C' : 'Selected, press Ctrl+C';
+      };
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(ok, fallback);
+        } else { fallback(); }
+      } catch (e) { fallback(); }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
