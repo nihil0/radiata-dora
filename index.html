@@ -157,6 +157,8 @@ ul.plain li::before { content: ""; position: absolute; left: 0; top: 0.72em; wid
 .terms div + div { border-top: 1px solid var(--rule); }
 .terms dt { font-family: var(--font-mono); font-size: var(--step--1); color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; padding-top: 2px; }
 .terms dd { margin: 0; font-size: 0.9375rem; }
+.terms.sources { max-width: 560px; }
+.terms.sources div { grid-template-columns: 170px minmax(0, 1fr); }
 
 .contact-box { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .email { font-family: var(--font-mono); font-size: 1rem; background: var(--paper); border: 1px solid var(--rule); border-radius: 4px; padding: 10px 14px; user-select: all; color: var(--ink); text-decoration: none; overflow-wrap: anywhere; }
@@ -170,9 +172,7 @@ ul.plain li::before { content: ""; position: absolute; left: 0; top: 0.72em; wid
 .about .role { font-family: var(--font-mono); font-size: var(--step--1); color: var(--muted); }
 
 footer.site { border-top: 1px solid var(--rule); }
-footer.site .wrap { padding-block: 28px 40px; display: grid; gap: 12px; color: var(--muted); font-size: 0.875rem; }
-footer.site .row { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-footer.site .sources { font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.6; }
+footer.site .wrap { padding-block: 28px 40px; color: var(--muted); font-size: 0.875rem; }
 
 @media (max-width: 900px) {
   .hero .wrap { grid-template-columns: minmax(0, 1fr); gap: 40px; padding-block: 48px 56px; }
@@ -286,12 +286,25 @@ footer.site .sources { font-family: var(--font-mono); font-size: 0.75rem; line-h
         <p class="label"><span class="en">The problem</span><span class="fi">Ongelma</span></p>
         <div class="sec-body">
           <h2>
-            <span class="en">The register is derived data. Most firms maintain it by hand.</span>
-            <span class="fi">Rekisteri on johdettua tietoa. Useimmat ylläpitävät sitä käsin.</span>
+            <span class="en">The register is derived data, yet most firms maintain it by hand.</span>
+            <span class="fi">Rekisteri on johdettua tietoa, mutta useimmat ylläpitävät sitä käsin.</span>
           </h2>
           <p>
-            <span class="en">Every fact in the register already exists in a source system. Accounts payable shows who you pay. Entra ID shows which apps use your tenant. The contract repository shows which contracts are in force. Yet most firms build the register from questionnaires and spreadsheets, and rebuild it each spring. They cannot show that it is complete. New SaaS services start between cycles, and nobody records them.</span>
-            <span class="fi">Jokainen rekisterin tieto on jo jossakin lähdejärjestelmässä. Ostoreskontra kertoo, kenelle maksatte. Entra ID kertoo, mitkä sovellukset käyttävät tenanttianne. Sopimusrekisteri kertoo, mitkä sopimukset ovat voimassa. Silti useimmat kokoavat rekisterin kyselyistä ja taulukoista ja rakentavat sen joka kevät uudelleen. Kattavuutta ei voi osoittaa. Uusia SaaS-palveluita otetaan käyttöön raportointikausien välillä, eikä kukaan kirjaa niitä.</span>
+            <span class="en">Everything the register needs is already in systems the firm runs.</span>
+            <span class="fi">Kaikki rekisterin tarvitsema tieto on jo yrityksen omissa järjestelmissä.</span>
+          </p>
+          <dl class="terms sources">
+            <div><dt><span class="en">Accounts payable</span><span class="fi">Ostoreskontra</span></dt><dd><span class="en">Who you pay.</span><span class="fi">Kenelle maksatte.</span></dd></div>
+            <div><dt>Entra ID</dt><dd><span class="en">Which applications use your tenant.</span><span class="fi">Mitkä sovellukset käyttävät tenanttianne.</span></dd></div>
+            <div><dt><span class="en">Contracts</span><span class="fi">Sopimukset</span></dt><dd><span class="en">Which agreements are in force.</span><span class="fi">Mitkä sopimukset ovat voimassa.</span></dd></div>
+          </dl>
+          <p>
+            <span class="en">Yet most firms rebuild the register by hand each spring. They cannot show it is complete, and services added between cycles go unrecorded.</span>
+            <span class="fi">Silti useimmat kokoavat rekisterin käsin joka kevät. Kattavuutta ei voi osoittaa, ja kausien välillä käyttöön otetut palvelut jäävät kirjaamatta.</span>
+          </p>
+          <p>
+            <span class="en">Radiata's Dora service takes this work off your hands. It builds the register directly from your source systems, so it stays complete between reporting cycles.</span>
+            <span class="fi">Radiatan Dora-palvelu hoitaa tämän työn puolestanne. Se rakentaa rekisterin suoraan lähdejärjestelmistä, joten rekisteri pysyy kattavana myös raportointikausien välillä.</span>
           </p>
         </div>
       </div>
@@ -348,11 +361,11 @@ footer.site .sources { font-family: var(--font-mono); font-size: 0.75rem; line-h
         <div class="sec-body">
           <div class="person">
             <span class="name">Neelabh Kashyap</span>
-            <span class="role"><span class="en">Founder, Radiata Oy · Espoo</span><span class="fi">Perustaja, Radiata Oy · Espoo</span></span>
+            <span class="role"><span class="en">Founder, Radiata Ltd</span><span class="fi">Perustaja, Radiata Oy</span></span>
           </div>
           <p>
-            <span class="en">Principal data platform architect with a PhD in signal processing. I have built enterprise data platforms on Azure and Databricks for Nordic organizations for many years. My work focuses on metadata, lineage and governance. A complete register depends on all three.</span>
-            <span class="fi">Tietoalustojen pääarkkitehti ja signaalinkäsittelyn tohtori. Olen rakentanut pohjoismaisille organisaatioille tietoalustoja Azureen ja Databricksiin jo vuosia. Työni keskittyy metatietoon, tiedon alkuperän jäljitettävyyteen ja hallintamalleihin. Kattava rekisteri tarvitsee kaikkia kolmea.</span>
+            <span class="en">Data and AI professional with a PhD. I have spent years building data platforms for Nordic companies. Most of that work is about knowing what data exists, where it comes from and who owns it.</span>
+            <span class="fi">Data- ja tekoälyasiantuntija ja tohtori. Olen rakentanut vuosia tietoalustoja pohjoismaisille yrityksille. Suurin osa työstä on sen selvittämistä, mitä tietoa on olemassa, mistä se tulee ja kuka siitä vastaa.</span>
           </p>
           <div class="contact-box">
             <a class="btn primary" href="https://bookings.cloud.microsoft/bookwithme/user/2f467c07c66140d6a5b9715022cc9ce1@radiata.fi/meetingtype/X1fo0L4CE02ZUwnvsBGn1A2?bookingcode=25ec1b66-cf3a-4721-903f-ea7b99cd1e25&amp;anonymous&amp;ismsaljsauthenabled&amp;ep=mcard" target="_blank" rel="noopener"><span class="en">Book a call</span><span class="fi">Varaa puhelu</span></a>
@@ -365,11 +378,7 @@ footer.site .sources { font-family: var(--font-mono); font-size: 0.75rem; line-h
 
 <footer class="site">
   <div class="wrap">
-    <div class="row">
-      <span>© 2026 Radiata Oy · Espoo, Finland</span>
-      <span><span class="en">Data platform architecture and DORA register tooling</span><span class="fi">Tietoalustojen arkkitehtuuri ja DORA-rekisterityökalut</span></span>
-    </div>
-    <p class="sources"><span class="en">Sources:</span><span class="fi">Lähteet:</span> ESAs, report on the 2024 dry run of DORA registers of information · Deloitte, European DORA Survey 2025 · Commission Implementing Regulation (EU) 2024/2956.</p>
+    <span><span class="en">© 2026 Radiata Ltd</span><span class="fi">© 2026 Radiata Oy</span></span>
   </div>
 </footer>
 
